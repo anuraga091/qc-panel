@@ -1,4 +1,4 @@
-import React, { useRef, useEffect }  from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateFormData } from '../redux/slices/qcSlice';
 import { uploadFile } from '../redux/action/qcActions';
@@ -14,7 +14,6 @@ const QCForm = ({ step }) => {
   };
 
   const fileInputRef = useRef(null);
-
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -34,13 +33,11 @@ const QCForm = ({ step }) => {
     }
   };
 
-
   useEffect(() => {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   }, [step]);
-
 
   return (
     <form className="space-y-6 bg-white p-6 rounded-lg shadow-lg">
@@ -80,20 +77,25 @@ const QCForm = ({ step }) => {
           id="imageUpload"
           name="imageUpload"
           ref={fileInputRef}
-          onChange={handleFileChange}
           accept="image/png, image/jpeg, image/jpg, image/webp"
+          onChange={handleFileChange}
           className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
           required
         />
         {formData.imageUpload && formData.imageUpload.url && (
           <>
             <p className="mt-2 text-sm text-gray-500">{formData.imageUpload.name}</p>
-            <img src={formData.imageUpload.url} alt="Uploaded" className="mt-2 max-w-xs"/>
+            <img
+              src={formData.imageUpload.url}
+              alt="Uploaded"
+              className="mt-2 max-w-full h-auto"
+              style={{ maxHeight: '300px', maxWidth: '100%' }}
+            />
           </>
         )}
       </div>
       <div>
-        <label htmlFor="comments" className="block text-sm font-medium text-gray-700 mt-4">Comment</label>
+        <label htmlFor="comments" className="block text-sm font-medium text-gray-700 mt-4">Comments</label>
         <textarea
           id="comments"
           name="comments"

@@ -18,17 +18,23 @@ const qcSlice = createSlice({
     },
     updateFormData(state, action) {
       const { step, data } = action.payload;
-      state.formData[step] = data;
+      if (!state.formData[step]) {
+        state.formData[step] = {};
+      }
+      state.formData[step] = { ...state.formData[step], ...data };
     },
     setFileMetadata(state, action) {
       const { step, fileMetadata } = action.payload;
-      state.formData[step] = {
-        ...state.formData[step],
-        imageUpload: fileMetadata,
-      };
+      if (!state.formData[step]) {
+        state.formData[step] = {};
+      }
+      state.formData[step].imageUpload = fileMetadata;
+    },
+    resetFormData(state) {
+      state.formData = {};
     },
   },
 });
 
-export const { setSteps, setCurrentStep, updateFormData, setFileMetadata } = qcSlice.actions;
+export const { setSteps, setCurrentStep, updateFormData, setFileMetadata, resetFormData } = qcSlice.actions;
 export default qcSlice.reducer;

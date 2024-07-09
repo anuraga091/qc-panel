@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCurrentStep, updateFormData } from '../redux/slices/qcSlice';
+import { setCurrentStep, updateFormData, resetFormData } from '../redux/slices/qcSlice';
 import QCForm from './QCForm';
 import generatePDF from '../utils/generatePDF';
 
@@ -8,7 +8,7 @@ const QCProcess = () => {
   const dispatch = useDispatch();
   const steps = useSelector((state) => state.qc.steps);
   const currentStep = useSelector((state) => state.qc.currentStep);
-  const formData = useSelector((state) => state.qc.formData);
+  const formData = useSelector((state) => state.qc.formData) || {};
   const currentFormData = formData[currentStep] || {};
   const [name, setName] = useState('');
   const [error, setError] = useState('');
@@ -18,8 +18,8 @@ const QCProcess = () => {
       currentFormData.freeText &&
       currentFormData.dropdown &&
       currentFormData.imageUpload &&
-      currentFormData.comments &&
-      currentFormData.toggle !== undefined
+      currentFormData.comments 
+      
     );
   };
 
@@ -30,7 +30,9 @@ const QCProcess = () => {
         dispatch(setCurrentStep(currentStep + 1));
       } else {
         await generatePDF(formData, name);
+        dispatch(resetFormData());  
         dispatch(setCurrentStep(0)); 
+        setName(''); 
       }
     } else {
       setError('Please fill in all fields before proceeding to the next step.');

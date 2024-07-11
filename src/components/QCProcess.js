@@ -24,6 +24,11 @@ const QCProcess = () => {
     );
   };
 
+  const hasSpecialCharacters = (str) => {
+    const regex = /[^a-zA-Z0-9 ]/; // Allows letters, numbers, and spaces only
+    return regex.test(str);
+  };
+
   const handleNext = async () => {
     if (currentStep === 0 || isFormValid()) {
       setError('');
@@ -53,7 +58,11 @@ const QCProcess = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    dispatch(updateFormData({ step: 0, data: { [name]: value } }));
+    if (hasSpecialCharacters(value)){
+      alert('Special charcters are not allowed')
+    } else{
+      dispatch(updateFormData({ step: 0, data: { [name]: value } }));
+    }
   };
 
   const handleFileChange = (e) => {

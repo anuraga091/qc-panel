@@ -24,27 +24,46 @@ const QCForm = ({ step }) => {
     }
   }, [step]);
 
+  const hasSpecialCharacters = (str) => {
+    const regex = /[^a-zA-Z0-9 ]/; // Allows letters, numbers, and spaces only
+    return regex.test(str);
+  };
+
   const handleStepNameChange = (e) => {
-    setStepName(e.target.value);
-    dispatch(updateFormData({ step, data: { stepName: e.target.value } }));
+    if (hasSpecialCharacters(e.target.value)){
+      alert('Special charcters are not allowed')
+    } else{
+      setStepName(e.target.value);
+      dispatch(updateFormData({ step, data: { stepName: e.target.value } }));
+    }
+    
   };
 
   const handleItemChange = (e) => {
     const { name, value } = e.target;
-    const updatedItems = inspectionItems.map(item =>
-      item.id === parseInt(name) ? { ...item, status: value } : item
-    );
-    setInspectionItems(updatedItems);
-    dispatch(updateFormData({ step, data: { inspectionItems: updatedItems } }));
+    if (hasSpecialCharacters(value)){
+      alert('Special charcters are not allowed')
+    } else{
+      const updatedItems = inspectionItems.map(item =>
+        item.id === parseInt(name) ? { ...item, status: value } : item
+      );
+      setInspectionItems(updatedItems);
+      dispatch(updateFormData({ step, data: { inspectionItems: updatedItems } }));
+    }
+    
   };
 
   const handleCommentChange = (e) => {
     const { name, value } = e.target;
-    const updatedImages = images.map((image, index) =>
-      index === parseInt(name) ? { ...image, comment: value } : image
-    );
-    setImages(updatedImages);
-    dispatch(updateFormData({ step, data: { images: updatedImages } }));
+    if (hasSpecialCharacters(value)){
+      alert('Special charcters are not allowed')
+    } else{
+      const updatedImages = images.map((image, index) =>
+        index === parseInt(name) ? { ...image, comment: value } : image
+      );
+      setImages(updatedImages);
+      dispatch(updateFormData({ step, data: { images: updatedImages } }));
+    }
   };
 
   const handleFileChange = (e) => {

@@ -4,6 +4,7 @@ import { setCurrentStep, updateFormData, resetFormData } from '../redux/slices/q
 import QCForm from './QCForm';
 import generatePDF from '../utils/generatePDF';
 import { uploadFile } from '../redux/action/qcActions';
+import { useNavigate } from 'react-router-dom';
 
 
 const QCProcess = () => {
@@ -11,6 +12,8 @@ const QCProcess = () => {
   const currentStep = useSelector((state) => state.qc.currentStep);
   const formData = useSelector((state) => state.qc);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+
 
   const isFormValid = () => {
     const currentFormData = formData.steps[currentStep - 1] || {};
@@ -28,9 +31,7 @@ const QCProcess = () => {
       if (currentStep < formData.steps.length) {
         dispatch(setCurrentStep(currentStep + 1));
       } else {
-        await generatePDF(formData);
-        dispatch(resetFormData());  // Clear form data
-        dispatch(setCurrentStep(0)); // Reset to the first screen after PDF generation
+        navigate('/reports');
       }
     } else {
       setError('Please fill in all fields before proceeding to the next step.');

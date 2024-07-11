@@ -143,17 +143,14 @@ const qcSlice = createSlice({
       }
     },
     setFileMetadata(state, action) {
-      const { step, data } = action.payload;
-
-      console.log('data', data)
+      const { step, fileMetadata } = action.payload;
       if (step === 0) {
-        state.img_url = data.images[0].url;
-      } 
-      else {
+        state.img_url = fileMetadata.url;
+      } else {
         if (!state.steps[step - 1]) {
           state.steps[step - 1] = { stepName: '', inspectionItems: [], images: [] };
         }
-        state.steps[step - 1].images.push(data.images[0].url);
+        state.steps[step - 1].images.push(fileMetadata);
       }
     },
     resetFormData(state) {

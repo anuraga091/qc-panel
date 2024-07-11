@@ -2,4 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.table-custom th,
+.table-custom td {
+    border: 1px solid black;
+}
 
+.table-custom th {
+    background-color: #f8f8f8;
+}

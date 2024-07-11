@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentStep, updateFormData } from '../redux/slices/qcSlice';
 import QCForm from './QCForm';
@@ -12,7 +12,14 @@ const QCProcess = () => {
   const formData = useSelector((state) => state.qc);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [clientInput, setClientInput] = useState('');
+  const [clientList, setClientList] = useState(['Trampoline', 'Adidas', 'Nike']);
+  const [showDropdown, setShowDropdown] = useState(false);
 
+  useEffect(() => {
+    // Populate input fields with Redux state when the component mounts
+    setClientInput(formData.client || '');
+  }, [formData.client]);
 
   const isFormValid = () => {
     const currentFormData = formData.steps[currentStep - 1] || {};
@@ -52,7 +59,7 @@ const QCProcess = () => {
       dispatch(setCurrentStep(1));
       setError('');
     } else {
-      setError('Please fill in all fields to start.');
+      alert('Please fill in all fields to start.');
     }
   };
 
@@ -63,6 +70,25 @@ const QCProcess = () => {
     } else{
       dispatch(updateFormData({ step: 0, data: { [name]: value } }));
     }
+  };
+
+  const handleClientChange = (e) => {
+    const value = e.target.value;
+    setClientInput(value);
+    setShowDropdown(value.length > 0);
+    dispatch(updateFormData({ step: 0, data: { client: value } }));
+  };
+
+  const handleClientSelect = (client) => {
+    setClientInput(client);
+    dispatch(updateFormData({ step: 0, data: { client } }));
+    setShowDropdown(false);
+  };
+
+  const handleAddNewClient = () => {
+    setClientList([...clientList, clientInput]);
+    
+    setShowDropdown(false);
   };
 
   const handleFileChange = (e) => {
@@ -78,7 +104,38 @@ const QCProcess = () => {
         <div>
           <h2 className="text-lg font-medium text-gray-900 mb-4">Enter Inspection Details</h2>
           <form className="space-y-6">
-            <input type="text" name="client" value={formData.client} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Client" />
+            <div className="relative">
+              <input
+                type="text"
+                name="client"
+                value={clientInput}
+                onChange={handleClientChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                placeholder="Client"
+                autoComplete="off"
+              />
+              {showDropdown && (
+                <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md max-h-48 overflow-y-auto">
+                  {clientList
+                    .filter(client => client.toLowerCase().includes(clientInput.toLowerCase()))
+                    .map((client, index) => (
+                      <li
+                        key={index}
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-200 border"
+                        onClick={() => handleClientSelect(client)}
+                      >
+                        {client}
+                      </li>
+                    ))}
+                  <li
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-200 font-bold"
+                    onClick={handleAddNewClient}
+                  >
+                    Add "{clientInput}" as new client
+                  </li>
+                </ul>
+              )}
+            </div>
             <input type="text" name="itemDescription" value={formData.itemDescription} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Item Descriptions" />
             <input type="text" name="sku" value={formData.sku} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="SKU" />
             <input type="text" name="poNumber" value={formData.poNumber} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="PO No." />

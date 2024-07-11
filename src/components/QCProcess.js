@@ -70,17 +70,22 @@ const QCProcess = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if (name === 'dateOfInspection') {
       dispatch(updateFormData({ step: 0, data: { [name]: value } }));
-    } else if (name === 'quantity' && value !== '' && !isNumeric(value)) {
-      alert('Only numbers are allowed');
+    } else if (name === 'quantity') {
+      // Allow empty value or numeric values
+      if (value === '' || isNumeric(value)) {
+        dispatch(updateFormData({ step: 0, data: { [name]: value } }));
+      } else {
+        alert('Only numbers are allowed');
+      }
     } else if (hasSpecialCharacters(value)) {
       alert('Special characters are not allowed');
     } else {
       dispatch(updateFormData({ step: 0, data: { [name]: value } }));
     }
   };
-
   const handleClientChange = (e) => {
     const value = e.target.value;
     setClientInput(value);

@@ -16,25 +16,30 @@ const QCProcess = () => {
   const [clientList, setClientList] = useState(['Trampoline', 'Adidas', 'Nike']);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  useEffect(() => {
-    // Populate input fields with Redux state when the component mounts
-    setClientInput(formData.client || '');
-  }, [formData.client]);
 
   const isFormValid = () => {
     const currentFormData = formData.steps[currentStep - 1] || {};
+    console.log(currentFormData);
     return (
       currentFormData.inspectionItems &&
-      currentFormData.inspectionItems.every(item => item.status !== undefined) &&
+      currentFormData.inspectionItems.every(item => item.status !== undefined && item.status !== '' && item.status !== null) &&
       currentFormData.images &&
       currentFormData.images.every(image => image.url && image.comment)
     );
   };
 
+
+  console.log(isFormValid())
+
   const hasSpecialCharacters = (str) => {
     const regex = /[^a-zA-Z0-9 ]/; // Allows letters, numbers, and spaces only
     return regex.test(str);
   };
+
+  const isNumeric = (str) => {
+  const regex = /^[0-9]+$/;
+  return regex.test(str);
+};
 
   const handleNext = async () => {
     if (currentStep === 0 || isFormValid()) {
@@ -67,6 +72,8 @@ const QCProcess = () => {
     const { name, value } = e.target;
     if (name === 'dateOfInspection'){
       dispatch(updateFormData({ step: 0, data: { [name]: value } }));
+    } else if (name === 'quantity' && !isNumeric(value)){
+      alert('Only numbers are allowed')
     } else if (hasSpecialCharacters(value)){
       alert('Special charcters are not allowed')
     } else{
@@ -144,7 +151,18 @@ const QCProcess = () => {
             <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Qty." />
             <input type="text" name="factory" value={formData.factory} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Factory" />
             <input type="text" name="inspectedBy" value={formData.inspectedBy} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Inspected By" />
-            <input type="date" name="dateOfInspection" value={formData.dateOfInspection} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Date of Inspection" />
+            <div>
+              <label htmlFor="dateOfInspection" className="block text-sm font-medium text-gray-700">
+                Date of Inspection
+              </label>
+              <input
+                type="date"
+                name="dateOfInspection"
+                value={formData.dateOfInspection}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
             <input type="text" name="inspectionResult" value={formData.inspectionResult} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Inspection Result" />
             <input type="text" name="product" value={formData.product} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Product" />
             <input type="file" accept="image/png, image/jpeg, image/jpg, image/webp" onChange={handleFileChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" />

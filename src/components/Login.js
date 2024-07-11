@@ -10,7 +10,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username === 'a' && password === 'a') {
+    if (username === 'admin' && password === 'admin123') {
       dispatch(login());
     } else {
       setError('Invalid credentials')

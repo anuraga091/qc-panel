@@ -37,9 +37,9 @@ const QCProcess = () => {
   };
 
   const isNumeric = (str) => {
-  const regex = /^[0-9]+$/;
-  return regex.test(str);
-};
+    const regex = /^[0-9]*$/; // Allows only digits (0-9)
+    return regex.test(str);
+  };
 
   const handleNext = async () => {
     if (currentStep === 0 || isFormValid()) {

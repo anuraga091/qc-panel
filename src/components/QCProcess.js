@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentStep, updateFormData } from '../redux/slices/qcSlice';
 import QCForm from './QCForm';
@@ -29,7 +29,7 @@ const QCProcess = () => {
   };
 
 
-  console.log(isFormValid())
+
 
   const hasSpecialCharacters = (str) => {
     const regex = /[^a-zA-Z0-9 ]/; // Allows letters, numbers, and spaces only

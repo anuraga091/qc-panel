@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCurrentStep, updateFormData, resetFormData } from '../redux/slices/qcSlice';
+import { setCurrentStep, updateFormData } from '../redux/slices/qcSlice';
 import QCForm from './QCForm';
-import generatePDF from '../utils/generatePDF';
 import { uploadFile } from '../redux/action/qcActions';
 import { useNavigate } from 'react-router-dom';
 
@@ -46,6 +45,7 @@ const QCProcess = () => {
     if (client && itemDescription && sku && poNumber && quantity && factory &&
         inspectedBy && dateOfInspection && inspectionResult && product && img_url) {
       dispatch(setCurrentStep(1));
+      setError('');
     } else {
       setError('Please fill in all fields to start.');
     }

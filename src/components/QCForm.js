@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateFormData } from '../redux/slices/qcSlice';
 import { uploadFile } from '../redux/action/qcActions';
@@ -9,12 +9,20 @@ const QCForm = ({ step }) => {
   const [stepName, setStepName] = useState(stepData.stepName);
   const [inspectionItems, setInspectionItems] = useState(stepData.inspectionItems);
   const [images, setImages] = useState(stepData.images);
+    const fileInputRef = useRef(null);
+
 
   useEffect(() => {
     setStepName(stepData.stepName);
     setInspectionItems(stepData.inspectionItems);
     setImages(stepData.images);
   }, [stepData]);
+
+  useEffect(() => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, [step]);
 
   const handleStepNameChange = (e) => {
     setStepName(e.target.value);
@@ -43,6 +51,8 @@ const QCForm = ({ step }) => {
     const file = e.target.files[0];
     if (file) {
       dispatch(uploadFile(step, file));
+    } else {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -70,7 +80,7 @@ const QCForm = ({ step }) => {
             onChange={handleItemChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
           >
-            <option value="">Select an option</option>
+            <option value="" disabled hidden>Select an option</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
             <option value="na">N/A</option>
@@ -81,9 +91,11 @@ const QCForm = ({ step }) => {
         <label className="block text-sm font-medium text-gray-700">Upload Image</label>
         <input
           type="file"
+          ref={fileInputRef}
           onChange={handleFileChange}
           accept="image/png, image/jpeg, image/jpg, image/webp"
           className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          required
         />
       </div>
       {images.map((image, index) => (

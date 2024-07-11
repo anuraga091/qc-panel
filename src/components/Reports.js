@@ -1,12 +1,16 @@
 import React,{useRef} from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector , useDispatch} from 'react-redux';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { resetFormData, setCurrentStep } from '../redux/slices/qcSlice';
+import { useNavigate } from 'react-router-dom';
+
 
 const Reports = () => {
   const formData = useSelector((state) => state.qc);
     const printRef = useRef();
-
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
  
 
 
@@ -67,7 +71,11 @@ const Reports = () => {
     }
   }
   
-  pdf.save('report.pdf');
+  pdf.save(`${formData.client}-report.pdf`);
+
+  dispatch(resetFormData()); 
+  dispatch(setCurrentStep(0));
+  navigate('/')
 };
 
 
